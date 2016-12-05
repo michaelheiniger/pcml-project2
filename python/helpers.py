@@ -98,7 +98,8 @@ def split_data(ratings, num_items_per_user, num_users_per_item,
     test_size = math.ceil(I.shape[0]*p_test)
     np.random.shuffle(all_indices)
     test_indices = all_indices[:test_size]
-    train_indices = np.delete(all_indices, test_indices, axis=0)
+    #train_indices = np.delete(all_indices, test_indices, axis=0)
+    train_indices = all_indices[test_size:]
 
     I_train = I[train_indices]
     J_train = J[train_indices]

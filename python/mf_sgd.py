@@ -3,7 +3,6 @@ import scipy
 import scipy.io
 import scipy.sparse as sp
 
-from helpers import *
 
 def init_MF(train, num_features):
     """init the parameter for matrix factorization."""
@@ -21,17 +20,17 @@ def init_MF(train, num_features):
     
     return user_features, item_features
    
-def compute_error(data, user_features, item_features, nz):
+def compute_error(data, W, Z, nz):
     """compute the loss (MSE) of the prediction of nonzero elements."""
     # ***************************************************
     # calculate rmse (we only consider nonzero entries.)
     # ***************************************************
-    wz = np.transpose(item_features).dot(user_features)
-    
+    wz = np.transpose(prediction(W,Z))
+
     mse = 0
     for d, n in nz:
         mse += np.power(data[d,n]-wz[d,n], 2)
-        
+    mse = mse/len(nz)
     rmse = np.sqrt(mse) # The factor 2 disappears because of the 1/2 of MSE
     
     return mse
@@ -43,7 +42,6 @@ def prediction(W,Z):
 
 def mf_sgd(train, test, num_epochs, gamma, num_features, lambda_user, lambda_item):
     """matrix factorization by SGD."""
-    rmse_train = 0
 
     # set seed
     np.random.seed(988)
@@ -78,7 +76,10 @@ def mf_sgd(train, test, num_epochs, gamma, num_features, lambda_user, lambda_ite
         rmse_train = compute_error(train,Z,W, nz_train)
         print("iter: {}, RMSE on training set: {}.".format(it, rmse_train))
 
-    # evaluate the test error.
+
+    # evaluate the train error
+    rmse_train = compute_error(train, Z, W, nz_train)
+    # evaluate the test error
     rmse_test = compute_error(test, Z, W, nz_test)
     print("RMSE on test data: {}.".format(rmse_test))
     

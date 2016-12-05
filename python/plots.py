@@ -3,7 +3,8 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-
+import matplotlib as mpl
+from mpl_toolkits.mplot3d import Axes3D
 
 def plot_raw_data(ratings):
     """plot the statistics result on raw rating data."""
@@ -79,3 +80,68 @@ def rmse_visualization_vs_num_features(num_features, rmse_train, rmse_test, file
     plt.title("RMSE versus Number of features")
     plt.savefig(filename)
     #plt.clf() 
+
+
+def rmse_visualization_vs_lambdas(lambdas_user, lambdas_item, rmse_train, rmse_test, filename):
+
+    fig = plt.figure()
+    ax = fig.gca(projection='3d')
+    z1 = rmse_train.squeeze(axis=1)
+    z2 = rmse_test.squeeze(axis=1)
+    x = lambdas_user.squeeze(axis=1)
+    y = lambdas_item.squeeze(axis=1)
+    ax.plot(x, y, z1, label='RMSE train')
+    ax.plot(x, y, z2, label='RMSE test')
+    ax.legend()
+    title = "RMSE versus lambdas"
+    plt.title(title)
+    plt.show()
+    #plt.clf()
+
+def rmse_visualization_vs_lambdas_user(lambdas_user, lambda_item, rmse_train, rmse_test, filename):
+
+    plt.plot(
+        lambdas_user,
+        rmse_train,
+        'r',
+        linestyle="-",
+        label='RMSE train')
+
+    plt.plot(
+        lambdas_user,
+        rmse_test,
+        'b',
+        linestyle="-",
+        label='RMSE test')
+    plt.xlabel("Lambda user")
+    plt.ylabel("RMSE")
+    plt.legend(loc=2)
+    plt.grid(True)
+    title = "RMSE versus lambda user (lambda item = %s)" % (lambda_item)
+    plt.title(title)
+    plt.savefig(filename)
+    #plt.clf()
+
+def rmse_visualization_vs_lambdas_item(lambdas_item, lambda_user, rmse_train, rmse_test, filename):
+
+    plt.plot(
+        lambdas_item,
+        rmse_train,
+        'r',
+        linestyle="-",
+        label='RMSE train')
+
+    plt.plot(
+        lambdas_item,
+        rmse_test,
+        'b',
+        linestyle="-",
+        label='RMSE test')
+    plt.xlabel("Lambda item")
+    plt.ylabel("RMSE")
+    plt.legend(loc=2)
+    plt.grid(True)
+    title = "RMSE versus lambda item (lambda user = %s)" % (lambda_user)
+    plt.title(title)
+    plt.savefig(filename)
+    #plt.clf()
