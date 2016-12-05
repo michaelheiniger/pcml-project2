@@ -33,7 +33,7 @@ def compute_error(data, W, Z, nz):
     mse = mse/len(nz)
     rmse = np.sqrt(mse) # The factor 2 disappears because of the 1/2 of MSE
     
-    return mse
+    return rmse
 
 def prediction(W,Z):
     # W is K features x D items
