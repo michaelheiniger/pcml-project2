@@ -117,6 +117,13 @@ def split_data(ratings, num_items_per_user, num_users_per_item,
     print("Total number of nonzero elements in test data:{v}".format(v=test.nnz))
     return valid_ratings, train, test
 
+def filter_ratings(ratings, num_items_per_user, num_users_per_item, min_num_ratings):
+    valid_users = np.where(num_items_per_user >= min_num_ratings)[0]
+    valid_items = np.where(num_users_per_item >= min_num_ratings)[0]
+    valid_ratings = ratings[valid_items, :][:, valid_users]
+
+    return valid_ratings
+
 def create_csv_submission(ratings, filename):
     """
     Creates an output file in csv format for submission to kaggle
@@ -156,3 +163,13 @@ def extract_indices(filename):
                 
     print(max_idx, ' ', min_idx)
     return indices
+
+def build_k_indices(num_ratings, k_fold, seed):
+    """build k indices for k-fold cross-validation."""
+    interval = int(num_ratings / k_fold)
+    np.random.seed(seed)
+    indices = np.random.permutation(num_ratings)
+
+    k_indices = [indices[k * interval: (k + 1) * interval]
+                 for k in range(k_fold)]
+    return np.array(k_indices)

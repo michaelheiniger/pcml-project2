@@ -145,3 +145,129 @@ def rmse_visualization_vs_lambdas_item(lambdas_item, lambda_user, rmse_train, rm
     plt.title(title)
     plt.savefig(filename)
     #plt.clf()
+
+def visualization_num_features(rmse_tr, rmse_te, num_features, filename):
+
+    rmse_tr_mean = np.expand_dims(np.mean(rmse_tr, axis=0), axis=0)
+    rmse_te_mean = np.expand_dims(np.mean(rmse_te, axis=0), axis=0)
+
+    plt.plot(
+        num_features,
+        rmse_tr.T,
+        'b',
+        linestyle="-",
+        color=([0.7, 0.7, 1]),
+        linewidth=0.3)
+    plt.plot(
+        num_features,
+        rmse_te.T,
+        'r',
+        linestyle="-",
+        color=[1, 0.7, 0.7],
+        linewidth=0.3)
+    plt.plot(
+        num_features,
+        rmse_tr_mean.T,
+        'b',
+        linestyle="-",
+        label='mean train',
+        linewidth=3)
+    plt.plot(
+        num_features,
+        rmse_te_mean.T,
+        'r',
+        linestyle="-",
+        label='mean test',
+        linewidth=3)
+    plt.title("RMSE vs Number of features")
+    plt.xlabel("Number of features")
+    plt.ylabel("RMSE")
+    plt.legend(loc=2)
+    plt.grid(True)
+    plt.savefig(filename)
+    # plt.clf()  # needed in case of consecutive call of this function to avoid stacking unrelated plots
+
+
+def visualization_lambdas_user(rmse_tr, rmse_te, lambdas_user, filename):
+
+    rmse_tr_mean = np.expand_dims(np.mean(rmse_tr, axis=0), axis=0)
+    rmse_te_mean = np.expand_dims(np.mean(rmse_te, axis=0), axis=0)
+
+    plt.plot(
+        lambdas_user,
+        rmse_tr.T,
+        'b',
+        linestyle="-",
+        color=([0.7, 0.7, 1]),
+        linewidth=0.3)
+    plt.plot(
+        lambdas_user,
+        rmse_te.T,
+        'r',
+        linestyle="-",
+        color=[1, 0.7, 0.7],
+        linewidth=0.3)
+    plt.plot(
+        lambdas_user,
+        rmse_tr_mean.T,
+        'b',
+        linestyle="-",
+        label='mean train',
+        linewidth=3)
+    plt.plot(
+        lambdas_user,
+        rmse_te_mean.T,
+        'r',
+        linestyle="-",
+        label='mean test',
+        linewidth=3)
+    plt.title("RMSE vs Lambda User")
+    plt.xlabel("Lambda User")
+    plt.ylabel("RMSE")
+    plt.xscale('log')
+    plt.legend(loc=2)
+    plt.grid(True)
+    plt.savefig(filename)
+    # plt.clf()  # needed in case of consecutive call of this function to avoid stacking unrelated plots
+
+def visualization_lambdas_item(rmse_tr, rmse_te, lambdas_item, filename):
+
+    rmse_tr_mean = np.expand_dims(np.mean(rmse_tr, axis=0), axis=0)
+    rmse_te_mean = np.expand_dims(np.mean(rmse_te, axis=0), axis=0)
+
+    plt.plot(
+        lambdas_item,
+        rmse_tr.T,
+        'b',
+        linestyle="-",
+        color=([0.7, 0.7, 1]),
+        linewidth=0.3)
+    plt.plot(
+        lambdas_item,
+        rmse_te.T,
+        'r',
+        linestyle="-",
+        color=[1, 0.7, 0.7],
+        linewidth=0.3)
+    plt.plot(
+        lambdas_item,
+        rmse_tr_mean.T,
+        'b',
+        linestyle="-",
+        label='mean train',
+        linewidth=3)
+    plt.plot(
+        lambdas_item,
+        rmse_te_mean.T,
+        'r',
+        linestyle="-",
+        label='mean test',
+        linewidth=3)
+    plt.title("RMSE vs Lambda Item")
+    plt.xlabel("Lambda Item")
+    plt.ylabel("RMSE")
+    plt.xscale('log')
+    plt.legend(loc=2)
+    plt.grid(True)
+    plt.savefig(filename)
+    # plt.clf()  # needed in case of consecutive call of this function to avoid stacking unrelated plots
