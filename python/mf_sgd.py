@@ -68,8 +68,8 @@ def mf_sgd(train, test, num_epochs, gamma, num_features, lambda_user, lambda_ite
 
         for d, n in nz_train:
             e = train[d,n] - prediction(W[:,d],Z[:,n])
-            Z[:,n] += gamma * (e*W[:,d] - lambda_item*Z[:,n])
-            W[:,d] += gamma * (e*Z[:,n] - lambda_user*W[:,d])
+            Z[:,n] += gamma * (e*W[:,d] - lambda_user*Z[:,n])
+            W[:,d] += gamma * (e*Z[:,n] - lambda_item*W[:,d])
 
         nz_row, nz_col = train.nonzero()
         nz_train = list(zip(nz_row, nz_col))
