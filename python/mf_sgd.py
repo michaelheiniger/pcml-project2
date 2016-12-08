@@ -56,6 +56,10 @@ def mf_sgd(train, test, num_epochs, gamma, num_features, lambda_user, lambda_ite
     nz_row, nz_col = test.nonzero()
     nz_test = list(zip(nz_row, nz_col))
 
+    # Store RMSE for each epochs
+    rmse_train = np.zeros((num_epochs, 1))
+    rmse_test = np.zeros((num_epochs,1))
+
     print("learn the matrix factorization using SGD...")
     for it in range(num_epochs):        
         # decrease step size
@@ -68,16 +72,10 @@ def mf_sgd(train, test, num_epochs, gamma, num_features, lambda_user, lambda_ite
 
         nz_row, nz_col = train.nonzero()
         nz_train = list(zip(nz_row, nz_col))
-        rmse_train = compute_error(train,Z,W, nz_train)
+        rmse_train[it] = compute_error(train,Z,W, nz_train)
+        rmse_test[it] = compute_error(test, Z, W, nz_test)
         #print("iter: {}, RMSE on training set: {}.".format(it, rmse_train))
-
-
-    # evaluate the train error
-    rmse_train = compute_error(train, Z, W, nz_train)
-
-    # evaluate the test error
-    rmse_test = compute_error(test, Z, W, nz_test)
-    #print("RMSE on test data: {}.".format(rmse_test))
+        #print("RMSE on test data: {}.".format(rmse_test))
     
     return rmse_train, rmse_test
 
@@ -108,8 +106,10 @@ def cross_validation(ratings, k_indices, k, num_epochs, gamma, num_features, lam
     # Matrix Factorization (using Stochastic Gradient Descent)
     ############################################################
     rmse_train, rmse_test = mf_sgd(train_ratings, test_ratings, num_epochs, gamma, num_features, lambda_user, lambda_item)
+    total_rmse_train = np.sum(rmse_train, axis=0)
+    total_rmse_test = np.sum(rmse_test, axis=0)
 
-    return rmse_train, rmse_test
+    return total_rmse_train, total_rmse_test
 
 def run_mf_cv_num_features(ratings, k_fold, num_epochs, num_features, lambda_user, lambda_item, filename):
     """ Performs cross-validation with variable number of features """
@@ -191,3 +191,33 @@ def run_mf_cv_lambda_item(ratings, k_fold, num_epochs, num_features, lambda_user
 def check_kfold(k_fold):
     if k_fold <= 1:
         raise ValueError('The value of k_fold must be larger or equal to 2.')
+
+
+def mf_sgd_compute_predictions(data, num_epochs, gamma, num_features, lambda_user, lambda_item):
+
+    # init matrix
+    Z_opt, W_opt = init_MF(data, num_features)
+
+    # find the non-zero ratings indices
+    nz_row, nz_col = data.nonzero()
+    nz_data = list(zip(nz_row, nz_col))
+
+    print("learn the matrix factorization using SGD...")
+    for it in range(num_epochs):
+        if (it % 5 == 0):
+            print("Starting epoch number %d" % (it))
+        # decrease step size
+        gamma /= 1.2
+
+        for d, n in nz_data:
+            e = data[d, n] - prediction(W_opt[:, d], Z_opt[:, n])
+            Z_opt[:, n] += gamma * (e * W_opt[:, d] - lambda_user * Z_opt[:, n])
+            W_opt[:, d] += gamma * (e * Z_opt[:, n] - lambda_item * W_opt[:, d])
+
+
+    rmse = compute_error(data, Z_opt, W_opt, nz_data)
+
+    X_hat = prediction(W_opt,Z_opt)
+
+    return X_hat, rmse
+
