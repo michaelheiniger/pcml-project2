@@ -127,8 +127,7 @@ def run_mf_cv_num_features(ratings, k_fold, num_epochs, num_features, lambda_use
             print("Num features: %d" % (n_features))
             rmse_tr[k, i], rmse_te[k, i] = cross_validation(ratings, k_indices, k, num_epochs, gamma, n_features, lambda_user, lambda_item)
 
-
-    p.visualization_num_features(rmse_tr, rmse_te, num_features, filename)
+    return rmse_tr, rmse_te
 
 def run_mf_cv_lambda_user(ratings, k_fold, num_epochs, num_features, lambdas_user, lambda_item, filename):
     """ Performs cross-validation with variable lambda user """
@@ -152,8 +151,7 @@ def run_mf_cv_lambda_user(ratings, k_fold, num_epochs, num_features, lambdas_use
         for i, lambda_u in enumerate(lambdas_user):
             rmse_tr[k, i], rmse_te[k, i] = cross_validation(ratings, k_indices, k, num_epochs, gamma, num_features, lambdas_user, lambda_item)
 
-
-    p.visualization_lambda_user(rmse_tr, rmse_te, lambdas_user, filename)
+    return rmse_tr, rmse_te
 
 def run_mf_cv_lambda_item(ratings, k_fold, num_epochs, num_features, lambda_user, lambdas_item, filename):
     """ Performs cross-validation with variable lambda item """
@@ -177,7 +175,7 @@ def run_mf_cv_lambda_item(ratings, k_fold, num_epochs, num_features, lambda_user
         for i, lambda_u in enumerate(lambdas_item):
             rmse_tr[k, i], rmse_te[k, i] = cross_validation(ratings, k_indices, k, num_epochs, gamma, num_features, lambda_user, lambdas_item)
 
-    p.visualization_lambda_item(rmse_tr, rmse_te, lambdas_item, filename)
+    return rmse_tr, rmse_te
 
 ############################################################################################
 # Cross-validation for comparison with other models
