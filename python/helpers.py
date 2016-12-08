@@ -173,3 +173,7 @@ def build_k_indices(num_ratings, k_fold, seed):
     k_indices = [indices[k * interval: (k + 1) * interval]
                  for k in range(k_fold)]
     return np.array(k_indices)
+
+def check_kfold(k_fold):
+    if k_fold <= 1:
+        raise ValueError('The value of k_fold must be larger or equal to 2.')

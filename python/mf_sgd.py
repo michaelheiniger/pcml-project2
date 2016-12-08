@@ -3,7 +3,7 @@ import scipy
 import scipy.io
 import scipy.sparse as sp
 
-from helpers import build_k_indices
+import helpers as h
 import plots as p
 
 
@@ -44,7 +44,10 @@ def prediction(W,Z):
     # Z is K features x N users
     return np.dot(W.T,Z)
 
-def mf_sgd(train, test, num_epochs, gamma, num_features, lambda_user, lambda_item):
+
+
+
+def mf_sgd_regularized(train, test, num_epochs, gamma, num_features, lambda_user, lambda_item):
     """ Matrix factorization using GD """
 
     # init basis and coeff matrices
@@ -80,6 +83,7 @@ def mf_sgd(train, test, num_epochs, gamma, num_features, lambda_user, lambda_ite
     return rmse_train, rmse_test
 
 
+
 def cross_validation(ratings, k_indices, k, num_epochs, gamma, num_features, lambda_user, lambda_item):
     """ Perform K-Fold Cross-validation for Matrix Factorization with SGD """
 
@@ -105,7 +109,7 @@ def cross_validation(ratings, k_indices, k, num_epochs, gamma, num_features, lam
     ############################################################
     # Matrix Factorization (using Stochastic Gradient Descent)
     ############################################################
-    rmse_train, rmse_test = mf_sgd(train_ratings, test_ratings, num_epochs, gamma, num_features, lambda_user, lambda_item)
+    rmse_train, rmse_test = mf_sgd_regularized(train_ratings, test_ratings, num_epochs, gamma, num_features, lambda_user, lambda_item)
     total_rmse_train = np.sum(rmse_train, axis=0)
     total_rmse_test = np.sum(rmse_test, axis=0)
 
@@ -114,13 +118,13 @@ def cross_validation(ratings, k_indices, k, num_epochs, gamma, num_features, lam
 def run_mf_cv_num_features(ratings, k_fold, num_epochs, num_features, lambda_user, lambda_item, filename):
     """ Performs cross-validation with variable number of features """
 
-    check_kfold(k_fold)
+    h.check_kfold(k_fold)
 
     seed = 1
 
     # Get k folds of indices for cross-validation
     rows,_ = ratings.nonzero()
-    k_indices = build_k_indices(len(rows), k_fold, seed)
+    k_indices = h.build_k_indices(len(rows), k_fold, seed)
 
     # Save training/test RMSE for each iteration of cross-validation
     rmse_tr = np.zeros((k_fold, len(num_features)))
@@ -141,13 +145,13 @@ def run_mf_cv_num_features(ratings, k_fold, num_epochs, num_features, lambda_use
 def run_mf_cv_lambda_user(ratings, k_fold, num_epochs, num_features, lambdas_user, lambda_item, filename):
     """ Performs cross-validation with variable lambda user """
 
-    check_kfold(k_fold)
+    h.check_kfold(k_fold)
 
     seed = 1
 
     # Get k folds of indices for cross-validation
     rows, _ = ratings.nonzero()
-    k_indices = build_k_indices(len(rows), k_fold, seed)
+    k_indices = h.build_k_indices(len(rows), k_fold, seed)
 
     # Save training/test RMSE for each iteration of cross-validation
     rmse_tr = np.zeros((k_fold, len(lambdas_user)))
@@ -166,13 +170,13 @@ def run_mf_cv_lambda_user(ratings, k_fold, num_epochs, num_features, lambdas_use
 def run_mf_cv_lambda_item(ratings, k_fold, num_epochs, num_features, lambda_user, lambdas_item, filename):
     """ Performs cross-validation with variable lambda item """
 
-    check_kfold(k_fold)
+    h.check_kfold(k_fold)
 
     seed = 1
 
     # Get k folds of indices for cross-validation
     rows, _ = ratings.nonzero()
-    k_indices = build_k_indices(len(rows), k_fold, seed)
+    k_indices = h.build_k_indices(len(rows), k_fold, seed)
 
     # Save training/test RMSE for each iteration of cross-validation
     rmse_tr = np.zeros((k_fold, len(lambdas_item)))
@@ -187,14 +191,42 @@ def run_mf_cv_lambda_item(ratings, k_fold, num_epochs, num_features, lambda_user
 
     p.visualization_lambda_item(rmse_tr, rmse_te, lambdas_item, filename)
 
+############################################################################################
+# Cross-validation for comparison with other models
+############################################################################################
+def run_mf_cv(ratings, k_fold, num_epochs, num_features):
+    rmse_tr, rmse_te = run_mf_reg_cv(ratings, k_fold, num_epochs, num_features, 0, 0)
+    return rmse_tr, rmse_te
 
-def check_kfold(k_fold):
-    if k_fold <= 1:
-        raise ValueError('The value of k_fold must be larger or equal to 2.')
+def run_mf_reg_cv(ratings, k_fold, num_epochs, num_features, lambda_user, lambdas_item):
+    """ Performs cross-validation for MF regularized"""
+
+    h.check_kfold(k_fold)
+
+    seed = 1
+
+    # Get k folds of indices for cross-validation
+    rows, _ = ratings.nonzero()
+    k_indices = h.build_k_indices(len(rows), k_fold, seed)
+
+    # Save training/test RMSE for each iteration of cross-validation
+    rmse_tr = np.zeros((k_fold, 1))
+    rmse_te = np.zeros((k_fold, 1))
+
+    gamma = 0.01
+
+    # K-fold cross-validation:
+    for k in range(0, k_fold):
+            rmse_tr[k], rmse_te[k] = cross_validation(ratings, k_indices, k, num_epochs, gamma, num_features, lambda_user, lambdas_item)
+
+    return rmse_tr, rmse_te
 
 
+############################################################################################
+# Compute the full prediction matrix once all the hyper-parameters have been chosen
+############################################################################################
 def mf_sgd_compute_predictions(data, num_epochs, gamma, num_features, lambda_user, lambda_item):
-
+    """ Compute the full prediction matrix """
     # init matrix
     Z_opt, W_opt = init_MF(data, num_features)
 
