@@ -90,5 +90,7 @@ ENV/
 
 
 # Ignore data foler
-
 data/
+
+# Ignore pyCharm folder
+.idea/
