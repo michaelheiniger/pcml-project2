@@ -15,7 +15,7 @@ def init_MF(train, num_features):
     # Init matrices at random
     user_features = np.random.random((num_features,num_users))
     item_features = np.random.random((num_features,num_items))
-    
+
     return user_features, item_features
    
 def compute_error(data, W, Z, nz):
@@ -122,9 +122,7 @@ def run_mf_cv_num_features(ratings, k_fold, num_epochs, num_features, lambda_use
 
     # K-fold cross-validation:
     for k in range(0, k_fold):
-        print("K-fold, iteration: %d" % (k))
         for i, n_features in enumerate(num_features):
-            print("Num features: %d" % (n_features))
             rmse_tr[k, i], rmse_te[k, i] = cross_validation(ratings, k_indices, k, num_epochs, gamma, n_features, lambda_user, lambda_item)
 
     return rmse_tr, rmse_te
@@ -149,7 +147,7 @@ def run_mf_cv_lambda_user(ratings, k_fold, num_epochs, num_features, lambdas_use
     # K-fold cross-validation:
     for k in range(0, k_fold):
         for i, lambda_u in enumerate(lambdas_user):
-            rmse_tr[k, i], rmse_te[k, i] = cross_validation(ratings, k_indices, k, num_epochs, gamma, num_features, lambdas_user, lambda_item)
+            rmse_tr[k, i], rmse_te[k, i] = cross_validation(ratings, k_indices, k, num_epochs, gamma, num_features, lambda_u, lambda_item)
 
     return rmse_tr, rmse_te
 
@@ -172,8 +170,8 @@ def run_mf_cv_lambda_item(ratings, k_fold, num_epochs, num_features, lambda_user
 
     # K-fold cross-validation:
     for k in range(0, k_fold):
-        for i, lambda_u in enumerate(lambdas_item):
-            rmse_tr[k, i], rmse_te[k, i] = cross_validation(ratings, k_indices, k, num_epochs, gamma, num_features, lambda_user, lambdas_item)
+        for i, lambda_i in enumerate(lambdas_item):
+            rmse_tr[k, i], rmse_te[k, i] = cross_validation(ratings, k_indices, k, num_epochs, gamma, num_features, lambda_user, lambda_i)
 
     return rmse_tr, rmse_te
 
