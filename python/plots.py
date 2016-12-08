@@ -54,12 +54,33 @@ def plot_train_test_data(train, test):
     
     plt.savefig("train_test")
     plt.show()
-    
+
+def rmse_visualization_vs_num_epochs(num_epochs, rmse_train, rmse_test, filename):
+
+    epochs_range = np.arange(1,num_epochs+1)
+    plt.plot(
+        epochs_range,
+        rmse_train,
+        'r',
+        linestyle="-",
+        label='RMSE train')
+
+    plt.plot(
+        epochs_range,
+        rmse_test,
+        'b',
+        linestyle="-",
+        label='RMSE test')
+    plt.xlabel("Epoch number")
+    plt.ylabel("RMSE")
+    plt.legend(loc=2)
+    plt.grid(True)
+    plt.title("Evolution of RMSE versus epoch number")
+    plt.savefig(filename)
+    # plt.clf()
     
 def rmse_visualization_vs_num_features(num_features, rmse_train, rmse_test, filename):
 
-    #print("Minimum mean:", np.amin(mean_error_rate), ", lambda:", np.argmin(mean_error_rate))
-    
     plt.plot(
         num_features,
         rmse_train,
