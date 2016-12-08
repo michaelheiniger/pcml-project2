@@ -103,7 +103,7 @@ def cross_validation(ratings, k_indices, k, num_epochs, gamma, num_features, lam
 
     return total_rmse_train, total_rmse_test
 
-def run_mf_cv_num_features(ratings, k_fold, num_epochs, num_features, lambda_user, lambda_item, filename):
+def run_mf_cv_num_features(ratings, k_fold, num_epochs, num_features, lambda_user, lambda_item):
     """ Performs cross-validation with variable number of features """
 
     h.check_kfold(k_fold)
@@ -129,7 +129,7 @@ def run_mf_cv_num_features(ratings, k_fold, num_epochs, num_features, lambda_use
 
     return rmse_tr, rmse_te
 
-def run_mf_cv_lambda_user(ratings, k_fold, num_epochs, num_features, lambdas_user, lambda_item, filename):
+def run_mf_cv_lambda_user(ratings, k_fold, num_epochs, num_features, lambdas_user, lambda_item):
     """ Performs cross-validation with variable lambda user """
 
     h.check_kfold(k_fold)
@@ -153,7 +153,7 @@ def run_mf_cv_lambda_user(ratings, k_fold, num_epochs, num_features, lambdas_use
 
     return rmse_tr, rmse_te
 
-def run_mf_cv_lambda_item(ratings, k_fold, num_epochs, num_features, lambda_user, lambdas_item, filename):
+def run_mf_cv_lambda_item(ratings, k_fold, num_epochs, num_features, lambda_user, lambdas_item):
     """ Performs cross-validation with variable lambda item """
 
     h.check_kfold(k_fold)
