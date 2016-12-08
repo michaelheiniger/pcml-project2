@@ -55,7 +55,7 @@ def plot_train_test_data(train, test):
     plt.savefig("train_test")
     plt.show()
 
-def rmse_visualization_vs_num_epochs(num_epochs, rmse_train, rmse_test, filename):
+def visualization_rmse_vs_num_epochs(num_epochs, rmse_train, rmse_test, filename):
 
     epochs_range = np.arange(1,num_epochs+1)
     plt.plot(
@@ -79,7 +79,7 @@ def rmse_visualization_vs_num_epochs(num_epochs, rmse_train, rmse_test, filename
     plt.savefig(filename)
     # plt.clf()
     
-def rmse_visualization_vs_num_features(num_features, rmse_train, rmse_test, filename):
+def visualization_rmse_vs_num_features(num_features, rmse_train, rmse_test, filename):
 
     plt.plot(
         num_features,
@@ -102,8 +102,7 @@ def rmse_visualization_vs_num_features(num_features, rmse_train, rmse_test, file
     plt.savefig(filename)
     #plt.clf() 
 
-
-def rmse_visualization_vs_lambdas(lambdas_user, lambdas_item, rmse_train, rmse_test, filename):
+def visualization_rmse_vs_lambdas(lambdas_user, lambdas_item, rmse_train, rmse_test, filename):
 
     fig = plt.figure()
     ax = fig.gca(projection='3d')
@@ -119,7 +118,7 @@ def rmse_visualization_vs_lambdas(lambdas_user, lambdas_item, rmse_train, rmse_t
     plt.show()
     #plt.clf()
 
-def rmse_visualization_vs_lambdas_user(lambdas_user, lambda_item, rmse_train, rmse_test, filename):
+def visualization_rmse_vs_lambdas_user(lambdas_user, lambda_item, rmse_train, rmse_test, filename):
 
     plt.plot(
         lambdas_user,
@@ -143,7 +142,7 @@ def rmse_visualization_vs_lambdas_user(lambdas_user, lambda_item, rmse_train, rm
     plt.savefig(filename)
     #plt.clf()
 
-def rmse_visualization_vs_lambdas_item(lambdas_item, lambda_user, rmse_train, rmse_test, filename):
+def visualization_rmse_vs_lambdas_item(lambdas_item, lambda_user, rmse_train, rmse_test, filename):
 
     plt.plot(
         lambdas_item,
