@@ -8,26 +8,19 @@ import plots as p
 
 
 def init_MF(train, num_features):
-    """init the parameter for matrix factorization."""
-    
-    # ***************************************************
-    # you should return:
-    #     user_features: shape = num_features, num_user
-    #     item_features: shape = num_features, num_item
-    # ***************************************************
-    
+    """ Init the parameter for matrix factorization."""
+
     num_items, num_users = train.shape
-    
+
+    # Init matrices at random
     user_features = np.random.random((num_features,num_users))
     item_features = np.random.random((num_features,num_items))
     
     return user_features, item_features
    
 def compute_error(data, W, Z, nz):
-    """compute the loss (MSE) of the prediction of nonzero elements."""
-    # ***************************************************
-    # calculate rmse (we only consider nonzero entries.)
-    # ***************************************************
+    """ Compute the loss (RMSE) of the prediction of nonzero elements."""
+
     wz = np.transpose(prediction(W,Z))
 
     mse = 0
@@ -44,16 +37,13 @@ def prediction(W,Z):
     # Z is K features x N users
     return np.dot(W.T,Z)
 
-
-
-
 def mf_sgd_regularized(train, test, num_epochs, gamma, num_features, lambda_user, lambda_item):
     """ Matrix factorization using GD """
 
-    # init basis and coeff matrices
+    # Init basis (W) and coeff (Z) matrices
     Z, W = init_MF(train, num_features)
 
-    # find the non-zero ratings indices 
+    # Find the non-zero ratings indices
     nz_row, nz_col = train.nonzero()
     nz_train = list(zip(nz_row, nz_col))
     nz_row, nz_col = test.nonzero()
@@ -63,7 +53,7 @@ def mf_sgd_regularized(train, test, num_epochs, gamma, num_features, lambda_user
     rmse_train = np.zeros((num_epochs, 1))
     rmse_test = np.zeros((num_epochs,1))
 
-    print("learn the matrix factorization using SGD...")
+    print("Learn the matrix factorization using SGD...")
     for it in range(num_epochs):        
         # decrease step size
         gamma /= 1.2
@@ -81,8 +71,6 @@ def mf_sgd_regularized(train, test, num_epochs, gamma, num_features, lambda_user
         #print("RMSE on test data: {}.".format(rmse_test))
     
     return rmse_train, rmse_test
-
-
 
 def cross_validation(ratings, k_indices, k, num_epochs, gamma, num_features, lambda_user, lambda_item):
     """ Perform K-Fold Cross-validation for Matrix Factorization with SGD """
@@ -252,4 +240,3 @@ def mf_sgd_compute_predictions(data, num_epochs, gamma, num_features, lambda_use
     X_hat = prediction(W_opt,Z_opt)
 
     return X_hat, rmse
-
