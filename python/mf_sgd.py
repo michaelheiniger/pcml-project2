@@ -97,11 +97,14 @@ def cross_validation(ratings, k_indices, k, num_epochs, gamma, num_features, lam
     ############################################################
     # Matrix Factorization (using Stochastic Gradient Descent)
     ############################################################
+    # Returned RMSE are arrays with rmse of each epochs
     rmse_train, rmse_test = mf_sgd_regularized(train_ratings, test_ratings, num_epochs, gamma, num_features, lambda_user, lambda_item)
-    total_rmse_train = np.sum(rmse_train, axis=0)
-    total_rmse_test = np.sum(rmse_test, axis=0)
 
-    return total_rmse_train, total_rmse_test
+    # Final RMSE is the one of last epoch
+    final_rmse_train = rmse_train[-1]
+    final_rmse_test = rmse_test[-1]
+
+    return final_rmse_train, final_rmse_test
 
 def run_mf_cv_num_features(ratings, k_fold, num_epochs, num_features, lambda_user, lambda_item):
     """ Performs cross-validation with variable number of features """
