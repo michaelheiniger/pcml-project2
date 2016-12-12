@@ -55,7 +55,7 @@ def compute_biases(ratings):
 # Learn MF using biases and regularizers
 ############################################################################################
 
-def mf_sgd_biased(train, test, num_epochs, gamma, num_features, lambda_user, lambda_item):
+def mf_sgd_biased(train, test, num_epochs, gamma, num_features, lambda_):
     """ Matrix factorization using GD 
     output:
         rmse_train: for every epoch (stored in array of shape (num_epochs, 1) )
@@ -83,9 +83,11 @@ def mf_sgd_biased(train, test, num_epochs, gamma, num_features, lambda_user, lam
         gamma /= 1.2
 
         for d, n in nz_train:
-            e = train[d,n] - prediction_biased(W[:,d],Z[:,n], mu, user_biases[0, n], item_biases[d])
-            Z[:,n] += gamma * (e *W[:,d] - lambda_user * Z[:,n])
-            W[:,d] += gamma * (e *Z[:,n] - lambda_item * W[:,d])
+            e = train[d,n] - prediction_biased(W[:,d],Z[:,n], mu, user_biases[0, n], item_biases[d,0])
+            user_biases[0, n] += gamma * (e - lambda_ * user_biases[0, n])
+            item_biases[d, 0] += gamma * (e - lambda_ * item_biases[d, 0])
+            Z[:,n] += gamma * (e *W[:,d] - lambda_ * Z[:,n])
+            W[:,d] += gamma * (e *Z[:,n] - lambda_ * W[:,d])
 
         nz_row, nz_col = train.nonzero()
         nz_train = list(zip(nz_row, nz_col))
@@ -102,11 +104,11 @@ def mf_sgd_biased(train, test, num_epochs, gamma, num_features, lambda_user, lam
 ############################################################################################
 # Compute the full prediction matrix once all the hyper-parameters have been chosen
 ############################################################################################
-def mf_sgd_biased_compute_predictions(data, num_epochs, gamma, num_features, lambda_user, lambda_item):
+def mf_sgd_biased_compute_predictions(data, num_epochs, gamma, num_features, lambda_):
     """ Compute the full prediction matrix """
     # init matrix
     Z_opt, W_opt = init_MF(data, num_features)
-    mu, user_biases, item_biases = compute_biases(train)
+    mu, user_biases, item_biases = compute_biases(data)
 
     # find the non-zero ratings indices
     nz_row, nz_col = data.nonzero()
@@ -120,12 +122,14 @@ def mf_sgd_biased_compute_predictions(data, num_epochs, gamma, num_features, lam
         gamma /= 1.2
 
         for d, n in nz_data:
-            e = train[d,n] - prediction_biased(W_opt[:,d], Z_opt[:,n], mu, user_biases[0, n], item_biases[d])
-            Z_opt[:, n] += gamma * (e * W_opt[:, d] - lambda_user * Z_opt[:, n])
-            W_opt[:, d] += gamma * (e * Z_opt[:, n] - lambda_item * W_opt[:, d])
+            e = data[d,n] - prediction_biased(W_opt[:,d], Z_opt[:,n], mu, user_biases[0, n], item_biases[d])
+            user_biases[0, n] += gamma * (e - lambda_ * user_biases[0, n])
+            item_biases[d, 0] += gamma * (e - lambda_ * item_biases[d, 0])
+            Z_opt[:, n] += gamma * (e * W_opt[:, d] - lambda_ * Z_opt[:, n])
+            W_opt[:, d] += gamma * (e * Z_opt[:, n] - lambda_ * W_opt[:, d])
 
     X_hat = prediction_biased(W_opt, Z_opt , mu, user_biases, item_biases)
-    rmse = compute_error_biased(data, X_hat, nz_data)
+    rmse  = compute_error_biased(data, X_hat, nz_data)
 
     return X_hat, rmse
 
@@ -135,7 +139,7 @@ def mf_sgd_biased_compute_predictions(data, num_epochs, gamma, num_features, lam
 ############################################################################################
 
 
-def cross_validation_biased(ratings, k_indices, k, num_epochs, gamma, num_features, lambda_user, lambda_item):
+def cross_validation_biased(ratings, k_indices, k, num_epochs, gamma, num_features, lambda_):
     """ Perform one fold of K-Fold Cross-validation for Matrix Factorization with SGD """
    
     # Form the K folds
@@ -157,7 +161,7 @@ def cross_validation_biased(ratings, k_indices, k, num_epochs, gamma, num_featur
 
     # Matrix Factorization (using Stochastic Gradient Descent)
     # Returned RMSE are arrays with rmse of each epochs
-    rmse_train, rmse_test = mf_sgd_biased(train_ratings, test_ratings, num_epochs, gamma, num_features, lambda_user, lambda_item)
+    rmse_train, rmse_test = mf_sgd_biased(train_ratings, test_ratings, num_epochs, gamma, num_features, lambda_)
 
     # Final RMSE is the one of last epoch
     final_rmse_train = rmse_train[-1]
@@ -166,7 +170,7 @@ def cross_validation_biased(ratings, k_indices, k, num_epochs, gamma, num_featur
     return final_rmse_train, final_rmse_test
 
 
-def run_mf_biased_cv_num_features(ratings, k_fold, num_epochs, num_features, lambda_user, lambda_item):
+def run_mf_biased_cv_num_features(ratings, k_fold, num_epochs, num_features, lambda_):
     """ Performs cross-validation with variable number of features """
 
     h.check_kfold(k_fold)
@@ -186,12 +190,12 @@ def run_mf_biased_cv_num_features(ratings, k_fold, num_epochs, num_features, lam
     # K-fold cross-validation:
     for k in range(0, k_fold):
         for i, n_features in enumerate(num_features):
-            rmse_tr[k, i], rmse_te[k, i] = cross_validation_biased(ratings, k_indices, k, num_epochs, gamma, n_features, lambda_user, lambda_item)
+            rmse_tr[k, i], rmse_te[k, i] = cross_validation_biased(ratings, k_indices, k, num_epochs, gamma, n_features, lambda_)
 
     return rmse_tr, rmse_te
 
-def run_mf_biased_cv_lambda_user(ratings, k_fold, num_epochs, num_features, lambdas_user, lambda_item):
-    """ Performs cross-validation with variable lambda user """
+def run_mf_biased_cv_lambda(ratings, k_fold, num_epochs, num_features, lambdas):
+    """ Performs cross-validation with variable lambda """
 
     h.check_kfold(k_fold)
 
@@ -202,42 +206,18 @@ def run_mf_biased_cv_lambda_user(ratings, k_fold, num_epochs, num_features, lamb
     k_indices = h.build_k_indices(len(rows), k_fold, seed)
 
     # Save training/test RMSE for each iteration of cross-validation
-    rmse_tr = np.zeros((k_fold, len(lambdas_user)))
-    rmse_te = np.zeros((k_fold, len(lambdas_user)))
+    rmse_tr = np.zeros((k_fold, len(lambdas)))
+    rmse_te = np.zeros((k_fold, len(lambdas)))
 
     gamma = 0.01
 
     # K-fold cross-validation:
     for k in range(0, k_fold):
-        for i, lambda_u in enumerate(lambdas_user):
-            rmse_tr[k, i], rmse_te[k, i] = cross_validation_biased(ratings, k_indices, k, num_epochs, gamma, num_features, lambda_u, lambda_item)
+        for i, lambda_ in enumerate(lambdas):
+            rmse_tr[k, i], rmse_te[k, i] = cross_validation_biased(ratings, k_indices, k, num_epochs, gamma, num_features, lambda_)
 
     return rmse_tr, rmse_te
 
-
-def run_mf_biased_cv_lambda_item(ratings, k_fold, num_epochs, num_features, lambda_user, lambdas_item):
-    """ Performs cross-validation with variable lambda item """
-
-    h.check_kfold(k_fold)
-
-    seed = 1
-
-    # Get k folds of indices for cross-validation
-    rows, _ = ratings.nonzero()
-    k_indices = h.build_k_indices(len(rows), k_fold, seed)
-
-    # Save training/test RMSE for each iteration of cross-validation
-    rmse_tr = np.zeros((k_fold, len(lambdas_item)))
-    rmse_te = np.zeros((k_fold, len(lambdas_item)))
-
-    gamma = 0.01
-
-    # K-fold cross-validation:
-    for k in range(0, k_fold):
-        for i, lambda_i in enumerate(lambdas_item):
-            rmse_tr[k, i], rmse_te[k, i] = cross_validation_biased(ratings, k_indices, k, num_epochs, gamma, num_features, lambda_user, lambda_i)
-
-    return rmse_tr, rmse_te
 
 
 ############################################################################################
@@ -245,10 +225,10 @@ def run_mf_biased_cv_lambda_item(ratings, k_fold, num_epochs, num_features, lamb
 ############################################################################################
 def run_mf_cv(ratings, k_fold, num_epochs, num_features):
     """cv without regularizer"""
-    rmse_tr, rmse_te = run_mf_reg_cv(ratings, k_fold, num_epochs, num_features, 0, 0)
+    rmse_tr, rmse_te = run_mf_reg_cv(ratings, k_fold, num_epochs, num_features, 0)
     return rmse_tr, rmse_te
 
-def run_mf_reg_cv(ratings, k_fold, num_epochs, num_features, lambda_user, lambdas_item):
+def run_mf_reg_cv(ratings, k_fold, num_epochs, num_features, lambda_):
     """ Performs cross-validation for regularized MF with bias"""
 
     h.check_kfold(k_fold)
@@ -267,6 +247,6 @@ def run_mf_reg_cv(ratings, k_fold, num_epochs, num_features, lambda_user, lambda
 
     # K-fold cross-validation:
     for k in range(0, k_fold):
-            rmse_tr[k], rmse_te[k] = cross_validation_biased(ratings, k_indices, k, num_epochs, gamma, num_features, lambda_user, lambdas_item)
+            rmse_tr[k], rmse_te[k] = cross_validation_biased(ratings, k_indices, k, num_epochs, gamma, num_features, lambda_)
 
     return rmse_tr, rmse_te
