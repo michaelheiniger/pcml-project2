@@ -199,7 +199,7 @@ def visualization_num_features(rmse_tr, rmse_te, num_features, filename):
         rmse_te_mean.T,
         'r',
         linestyle="-",
-        marker='o',
+        marker='v',
         markersize=3,
         label='mean test',
         linewidth=1)
@@ -303,3 +303,51 @@ def visualization_lambdas_item(rmse_tr, rmse_te, lambdas_item, filename):
     plt.grid(True)
     plt.savefig(filename)
     # plt.clf()  # needed in case of consecutive call of this function to avoid stacking unrelated plots
+    
+def visualization_lambdas(rmse_tr, rmse_te, lambdas, filename):
+
+    rmse_tr_mean = np.expand_dims(np.mean(rmse_tr, axis=0), axis=0)
+    rmse_te_mean = np.expand_dims(np.mean(rmse_te, axis=0), axis=0)
+
+    plt.plot(
+        lambdas,
+        rmse_tr.T,
+        'b',
+        linestyle="-",
+        color=([0.7, 0.7, 1]),
+        linewidth=0.5)
+    plt.plot(
+        lambdas,
+        rmse_te.T,
+        'r',
+        linestyle="-",
+        color=[1, 0.7, 0.7],
+        linewidth=0.5)
+    plt.plot(
+        lambdas,
+        rmse_tr_mean.T,
+        'b',
+        linestyle="-",
+        marker='o',
+        markersize=3,
+        label='mean train',
+        linewidth=1)
+    plt.plot(
+        lambdas,
+        rmse_te_mean.T,
+        'r',
+        linestyle="-",
+        marker='o',
+        markersize=3,
+        label='mean test',
+        linewidth=1)
+    plt.title("RMSE vs Lambda")
+    plt.xlabel("Lambda")
+    plt.ylabel("RMSE")
+    #plt.xscale('log')
+    plt.legend(loc=2)
+    plt.grid(True)
+    plt.savefig(filename)
+    # plt.clf()  # needed in case of consecutive call of this function to avoid stacking unrelated plots
+
+

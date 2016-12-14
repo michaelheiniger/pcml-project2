@@ -83,7 +83,7 @@ def mf_sgd_biased(train, test, num_epochs, gamma, num_features, lambda_):
         gamma /= 1.2
 
         for d, n in nz_train:
-            e = train[d,n] - prediction_biased(W[:,d],Z[:,n], mu, user_biases[0, n], item_biases[d,0])
+            e = train[d,n] - prediction_biased(W[:,d], Z[:,n], mu, user_biases[0, n], item_biases[d,0])
             user_biases[0, n] += gamma * (e - lambda_ * user_biases[0, n])
             item_biases[d, 0] += gamma * (e - lambda_ * item_biases[d, 0])
             Z[:,n] += gamma * (e *W[:,d] - lambda_ * Z[:,n])
@@ -185,7 +185,7 @@ def run_mf_biased_cv_num_features(ratings, k_fold, num_epochs, num_features, lam
     rmse_tr = np.zeros((k_fold, len(num_features)))
     rmse_te = np.zeros((k_fold, len(num_features)))
 
-    gamma = 0.01
+    gamma = 0.02
 
     # K-fold cross-validation:
     for k in range(0, k_fold):
@@ -209,7 +209,7 @@ def run_mf_biased_cv_lambda(ratings, k_fold, num_epochs, num_features, lambdas):
     rmse_tr = np.zeros((k_fold, len(lambdas)))
     rmse_te = np.zeros((k_fold, len(lambdas)))
 
-    gamma = 0.01
+    gamma = 0.02
 
     # K-fold cross-validation:
     for k in range(0, k_fold):
@@ -243,7 +243,7 @@ def run_mf_reg_cv(ratings, k_fold, num_epochs, num_features, lambda_):
     rmse_tr = np.zeros((k_fold, 1))
     rmse_te = np.zeros((k_fold, 1))
 
-    gamma = 0.01
+    gamma = 0.02
 
     # K-fold cross-validation:
     for k in range(0, k_fold):
