@@ -345,7 +345,7 @@ def visualization_lambdas(rmse_tr, rmse_te, lambdas, filename):
     plt.xlabel("Lambda")
     plt.ylabel("RMSE")
     #plt.xscale('log')
-    plt.legend(loc=2)
+    plt.legend(loc=4)
     plt.grid(True)
     plt.savefig(filename)
     # plt.clf()  # needed in case of consecutive call of this function to avoid stacking unrelated plots
