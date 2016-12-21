@@ -56,6 +56,7 @@ def plot_train_test_data(train, test):
     plt.show()
 
 def visualization_rmse_vs_num_epochs(num_epochs, rmse_train, rmse_test, filename):
+    """visualize the evolution of rmse with number of iterations."""
 
     epochs_range = np.arange(1,num_epochs+1)
     plt.plot(

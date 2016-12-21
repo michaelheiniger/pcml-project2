@@ -45,7 +45,7 @@ def prediction_biased(W, Z, mu, user_biases, item_biases):
 
 
 def compute_biases(ratings):
-    """computes biases for every user and every item, and the overall average
+    """computes biases for every user and every item, and the overall average of the ratings
     
     input:
         ratings: the matrix of ratings
@@ -69,6 +69,7 @@ def compute_biases(ratings):
     item_biases = np.reshape(item_means - mu, (num_items, 1))
     
     return mu, user_biases, item_biases
+
 
 def compute_biases_restricted(ratings, num_items_per_user, num_users_per_item, min_num_ratings):
     """computes biases of the users and the items which have more than 'min_num_ratings' non-zero ratings.
