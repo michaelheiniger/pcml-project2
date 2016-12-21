@@ -8,6 +8,14 @@ import helpers as h
 # Global mean baseline
 ########################################################################
 def run_cross_validation_global_baseline(ratings, k_fold):
+    """cross-validation for the global baseline
+    input:
+        ratings: the given ratings
+        k_fold: the number of folds
+    output:
+        rmse_tr: the train errors for every fold
+        rmse_te: the test errors for every fold
+    """
     h.check_kfold(k_fold)
 
     seed = 1
@@ -28,7 +36,14 @@ def run_cross_validation_global_baseline(ratings, k_fold):
     return rmse_tr, rmse_te
 
 def baseline_global_mean(train, test):
-    """baseline using the global mean."""
+    """baseline using the global mean.
+    input: 
+        train: the training set
+        test: the test set
+    output:
+        rmse_tr: rmse on the training set
+        rmse_te: rmse on the test set
+    """
 
     _, _, values_train = sp.find(train)
 
@@ -63,6 +78,14 @@ def baseline_global_mean(train, test):
 # User mean baseline
 ########################################################################
 def run_cross_validation_user_baseline(ratings, k_fold):
+    """cross-validation for user mean baseline
+    input:
+        ratings: the given ratings
+        k_fold: the number of folds
+    output:
+        rmse_tr: the train errors for every fold
+        rmse_te: the test errors for every fold
+    """
     h.check_kfold(k_fold)
 
     seed = 1
@@ -83,7 +106,14 @@ def run_cross_validation_user_baseline(ratings, k_fold):
     return rmse_tr, rmse_te
 
 def baseline_user_mean(train, test):
-    """baseline using the user means as the prediction."""
+    """baseline using the user means as the prediction.
+    input: 
+        train: the training set
+        test: the test set
+    output:
+        rmse_tr: rmse on the training set
+        rmse_te: rmse on the test set
+    """
     num_items, num_users = train.shape
 
     # Compute mean for each user
@@ -123,6 +153,14 @@ def baseline_user_mean(train, test):
 # Item mean baseline
 ########################################################################
 def run_cross_validation_item_baseline(ratings, k_fold):
+    """cross-validation for the global baseline
+    input:
+        ratings: the given ratings
+        k_fold: the number of folds
+    output:
+        rmse_tr: the train errors for every fold
+        rmse_te: the test errors for every fold
+    """
     h.check_kfold(k_fold)
 
     seed = 1
@@ -144,7 +182,14 @@ def run_cross_validation_item_baseline(ratings, k_fold):
 
 
 def baseline_item_mean(train, test):
-    """baseline using item means as the prediction."""
+    """baseline using item means as the prediction.
+    input: 
+        train: the training set
+        test: the test set
+    output:
+        rmse_tr: rmse on the training set
+        rmse_te: rmse on the test set
+    """
 
     num_items, num_users = train.shape
 
@@ -187,6 +232,11 @@ def baseline_item_mean(train, test):
 # Form the K folds for cross-validation
 ############################################################
 def get_data_sets_for_cross_validation(ratings, k_indices, k):
+    """splits the ratings into a train and a test set
+    input: 
+        ratings: the given ratings
+        k_indices: the indices for k_fold crossvalidation
+        k: the number of the fold"""
 
     indices_test = k_indices[k]
     indices_train = np.delete(k_indices.reshape(k_indices.size, 1), indices_test, axis=0).squeeze(axis=1)
