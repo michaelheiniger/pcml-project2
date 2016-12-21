@@ -118,6 +118,7 @@ def split_data(ratings, num_items_per_user, num_users_per_item,
     return valid_ratings, train, test
 
 def filter_ratings(ratings, num_items_per_user, num_users_per_item, min_num_ratings):
+    """returns only the users and items which have more than 'min_num_ratings' ratings"""
     valid_users = np.where(num_items_per_user >= min_num_ratings)[0]
     valid_items = np.where(num_users_per_item >= min_num_ratings)[0]
     valid_ratings = ratings[valid_items, :][:, valid_users]
@@ -127,9 +128,9 @@ def filter_ratings(ratings, num_items_per_user, num_users_per_item, min_num_rati
 def create_csv_submission(ratings, filename):
     """
     Creates an output file in csv format for submission to kaggle
-    Arguments: ids (event ids associated with each prediction)
-               ratings (full matrix)
-               filename (string name of .csv output file to be created)
+    Input: 
+        ratings (full matrix)
+        filename (string name of .csv output file to be created)
     """
     with open(filename, 'w') as csvfile:
         fieldnames = ['Id', 'Prediction']
@@ -175,5 +176,6 @@ def build_k_indices(num_ratings, k_fold, seed):
     return np.array(k_indices)
 
 def check_kfold(k_fold):
+    """check that k_fold >1"""
     if k_fold <= 1:
         raise ValueError('The value of k_fold must be larger or equal to 2.')

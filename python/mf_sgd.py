@@ -8,7 +8,14 @@ import plots as p
 
 
 def init_MF(train, num_features):
-    """ Init the parameter for matrix factorization."""
+    """ Init the parameter for matrix factorization.
+    input:
+        train: the train dataset
+        num_features: the dimension (K) of the subspace
+    output:
+        user_features: initialized user feature matrix
+        item_features: initialized item feature matrix
+    """
 
     num_items, num_users = train.shape
 
@@ -19,7 +26,14 @@ def init_MF(train, num_features):
     return user_features, item_features
    
 def compute_error(data, W, Z, nz):
-    """ Compute the loss (RMSE) of the prediction of nonzero elements."""
+    """ Compute the loss (RMSE) of the prediction of nonzero elements.
+    input:
+        data: the known ratings
+        W: item feature matrix
+        Z: user feature matrix
+        nz: nonzero indices of data
+    output:
+        rmse: the RMSE of the predicted elements"""
 
     wz = np.transpose(prediction(W,Z))
 
@@ -32,13 +46,30 @@ def compute_error(data, W, Z, nz):
     return rmse
 
 def prediction(W,Z):
-    """ Compute the predicted matrix W.dot(Z.T) of size DxN for W (KxD) and Z (KxN) """
-    # W is K features x D items
-    # Z is K features x N users
+    """ Compute the predicted matrix W.dot(Z.T) of size DxN for W (KxD) and Z (KxN) 
+    input:
+        W: item feature matrix
+        Z: user feature matrix
+    ouput:
+        the prediction of the ratings
+        """
+    
     return np.dot(W.T,Z)
 
 def mf_sgd_regularized(train, test, num_epochs, gamma, num_features, lambda_user, lambda_item):
-    """ Matrix factorization using GD """
+    """ Matrix factorization using GD 
+    input: 
+        train: the train data
+        test: the test data
+        gamma: the initial learning rate
+        num_epochs: number iterations of algorithm
+        num_features: the dimension (K) of the subspace
+        lambda_user: regularization parameter for the user feature matrix
+        lambda_item: regularization parameter for the item feature matrix
+    output:
+        rmse_train: train errors for every epoch
+        rmse_test: test_errors for every epoch
+        """
 
     # Init basis (W) and coeff (Z) matrices
     Z, W = init_MF(train, num_features)
@@ -73,7 +104,20 @@ def mf_sgd_regularized(train, test, num_epochs, gamma, num_features, lambda_user
     return rmse_train, rmse_test
 
 def cross_validation(ratings, k_indices, k, num_epochs, gamma, num_features, lambda_user, lambda_item):
-    """ Perform K-Fold Cross-validation for Matrix Factorization with SGD """
+    """ Perform K-Fold Cross-validation for Matrix Factorization with SGD 
+    input: 
+        ratings: the dataset
+        k_indices: indices for the k_fold crossvalidaton
+        k: number of the fold
+        num_epochs: number iterations of algorithm
+        gamma: the initial learning rate
+        num_features: the dimension (K) of the subspace
+        lambda_user: regularization parameter for the user feature matrix
+        lambda_item: regularization parameter for the item feature matrix
+    output:
+        final_rmse_train: train rmse of last epoch
+        final_rmse_test: test rmse of last epoch
+        """
 
     ############################################################
     # Form the K folds
@@ -107,7 +151,17 @@ def cross_validation(ratings, k_indices, k, num_epochs, gamma, num_features, lam
     return final_rmse_train, final_rmse_test
 
 def run_mf_cv_num_features(ratings, k_fold, num_epochs, num_features, lambda_user, lambda_item):
-    """ Performs cross-validation with variable number of features """
+    """ Performs cross-validation with variable number of features 
+    input: 
+        ratings: the dataset
+        k_fold: number of the folds
+        num_epochs: number iterations of algorithm
+        num_features: array of values for the dimension (K) of the subspace
+        lambda_user: regularization parameter for the user feature matrix
+        lambda_item: regularization parameter for the item feature matrix
+    output:
+        rmse_tr:  matrix of train errrors with shape (k_fold, len(num_features))
+        rmse_te:  matrix of test errors with shape (k_fold, len(num_features))"""
 
     h.check_kfold(k_fold)
 
@@ -131,7 +185,17 @@ def run_mf_cv_num_features(ratings, k_fold, num_epochs, num_features, lambda_use
     return rmse_tr, rmse_te
 
 def run_mf_cv_lambda_user(ratings, k_fold, num_epochs, num_features, lambdas_user, lambda_item):
-    """ Performs cross-validation with variable lambda user """
+    """ Performs cross-validation with variable lambda user 
+    input: 
+        ratings: the dataset
+        k_fold: number of the folds
+        num_epochs: number iterations of algorithm
+        num_features: the dimension (K) of the subspace
+        lambdas_user: array of values for the regularization parameter for the user feature matrix
+        lambda_item: regularization parameter for the item feature matrix
+    output:
+        rmse_tr:  matrix of train errrors with shape (k_fold, len(lambdas_user))
+        rmse_te:  matrix of test errors with shape (k_fold, len(lambdas_user))"""
 
     h.check_kfold(k_fold)
 
@@ -155,7 +219,17 @@ def run_mf_cv_lambda_user(ratings, k_fold, num_epochs, num_features, lambdas_use
     return rmse_tr, rmse_te
 
 def run_mf_cv_lambda_item(ratings, k_fold, num_epochs, num_features, lambda_user, lambdas_item):
-    """ Performs cross-validation with variable lambda item """
+    """ Performs cross-validation with variable lambda item 
+    input: 
+        ratings: the dataset
+        k_fold: number of the folds
+        num_epochs: number iterations of algorithm
+        num_features: the dimension (K) of the subspace
+        lambda_user: regularization parameter for the user feature matrix
+        lambdas_item: array of values for the regularization parameter for the item feature matrix
+    output:
+        rmse_tr:  matrix of train errrors with shape (k_fold, len(lambdas_item))
+        rmse_te:  matrix of test errors with shape (k_fold, len(lambdas_item))"""
 
     h.check_kfold(k_fold)
 
@@ -182,11 +256,33 @@ def run_mf_cv_lambda_item(ratings, k_fold, num_epochs, num_features, lambda_user
 # Cross-validation for comparison with other models
 ############################################################################################
 def run_mf_cv(ratings, k_fold, num_epochs, num_features):
+    """cross validation for the non-regularized matrix factorization
+    input: 
+        ratings: the dataset
+        k_fold: number of the folds
+        num_epochs: number iterations of algorithm
+        num_features: the dimension (K) of the subspace
+    output:
+        rmse_tr: train errors for every fold
+        rmse_te: test errors for every fold
+    """
+        
     rmse_tr, rmse_te = run_mf_reg_cv(ratings, k_fold, num_epochs, num_features, 0, 0)
     return rmse_tr, rmse_te
 
 def run_mf_reg_cv(ratings, k_fold, num_epochs, num_features, lambda_user, lambdas_item):
-    """ Performs cross-validation for MF regularized"""
+    """ Performs cross-validation for MF regularized
+    input: 
+        ratings: the dataset
+        k_fold: number of the folds
+        num_epochs: number iterations of algorithm
+        num_features: the dimension (K) of the subspace
+        lambda_user: regularization parameter for the user feature matrix
+        lambda_item: regularization parameter for the item feature matrix
+    output:
+        rmse_tr: train errors for every fold
+        rmse_te: test errors for every fold
+    """
 
     h.check_kfold(k_fold)
 
@@ -213,7 +309,18 @@ def run_mf_reg_cv(ratings, k_fold, num_epochs, num_features, lambda_user, lambda
 # Compute the full prediction matrix once all the hyper-parameters have been chosen
 ############################################################################################
 def mf_sgd_compute_predictions(data, num_epochs, gamma, num_features, lambda_user, lambda_item):
-    """ Compute the full prediction matrix """
+    """ Compute the full prediction matrix 
+    input: 
+        data: the dataset
+        k_fold: number of the folds
+        num_epochs: number iterations of algorithm
+        gamma: the learning rate
+        num_features: the dimension (K) of the subspace
+        lambda_user: regularization parameter for the user feature matrix
+        lambda_item: regularization parameter for the item feature matrix
+    output:
+        X_hat: the predictions
+        rmse: the train error on the dataset"""
     # init matrix
     Z_opt, W_opt = init_MF(data, num_features)
 
