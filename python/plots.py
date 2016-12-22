@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 from mpl_toolkits.mplot3d import Axes3D
 
+
 def plot_raw_data(ratings):
     """plot the statistics result on raw rating data."""
     # do statistics.
@@ -26,7 +27,7 @@ def plot_raw_data(ratings):
     ax2.plot(sorted_num_users_per_movie)
     ax2.set_xlabel("items")
     ax2.set_ylabel("number of ratings (sorted)")
-    #ax2.set_xticks(np.arange(0, 2000, 300))
+    # ax2.set_xticks(np.arange(0, 2000, 300))
     ax2.grid()
 
     plt.tight_layout()
@@ -39,26 +40,27 @@ def plot_raw_data(ratings):
 def plot_train_test_data(train, test):
     """visualize the train and test data."""
     fig = plt.figure()
-    
+
     ax1 = fig.add_subplot(1, 2, 1)
     ax1.spy(train, precision=0.01, markersize=0.05, aspect='auto')
     ax1.set_xlabel("Users")
     ax1.set_ylabel("Items")
     ax1.set_title("Training data")
-    
+
     ax2 = fig.add_subplot(1, 2, 2)
     ax2.spy(test, precision=0.01, markersize=0.05, aspect='auto')
     ax2.set_xlabel("Users")
     ax2.set_ylabel("Items")
     ax2.set_title("Test data")
-    
+
     plt.savefig("train_test")
     plt.show()
+
 
 def visualization_rmse_vs_num_epochs(num_epochs, rmse_train, rmse_test, filename):
     """visualize the evolution of rmse with number of iterations."""
 
-    epochs_range = np.arange(1,num_epochs+1)
+    epochs_range = np.arange(1, num_epochs + 1)
     plt.plot(
         epochs_range,
         rmse_train,
@@ -79,16 +81,16 @@ def visualization_rmse_vs_num_epochs(num_epochs, rmse_train, rmse_test, filename
     plt.title("Evolution of RMSE versus epoch number")
     plt.savefig(filename)
     # plt.clf()
-    
-def visualization_rmse_vs_num_features(num_features, rmse_train, rmse_test, filename):
 
+
+def visualization_rmse_vs_num_features(num_features, rmse_train, rmse_test, filename):
     plt.plot(
         num_features,
         rmse_train,
         'r',
         linestyle="-",
         label='RMSE train')
-    
+
     plt.plot(
         num_features,
         rmse_test,
@@ -101,10 +103,10 @@ def visualization_rmse_vs_num_features(num_features, rmse_train, rmse_test, file
     plt.grid(True)
     plt.title("RMSE versus Number of features")
     plt.savefig(filename)
-    #plt.clf() 
+    # plt.clf()
+
 
 def visualization_rmse_vs_lambdas(lambdas_user, lambdas_item, rmse_train, rmse_test, filename):
-
     fig = plt.figure()
     ax = fig.gca(projection='3d')
     z1 = rmse_train.squeeze(axis=1)
@@ -117,10 +119,10 @@ def visualization_rmse_vs_lambdas(lambdas_user, lambdas_item, rmse_train, rmse_t
     title = "RMSE versus lambdas"
     plt.title(title)
     plt.show()
-    #plt.clf()
+    # plt.clf()
+
 
 def visualization_rmse_vs_lambdas_user(lambdas_user, lambda_item, rmse_train, rmse_test, filename):
-
     plt.plot(
         lambdas_user,
         rmse_train,
@@ -141,10 +143,10 @@ def visualization_rmse_vs_lambdas_user(lambdas_user, lambda_item, rmse_train, rm
     title = "RMSE versus lambda user (lambda item = %s)" % (lambda_item)
     plt.title(title)
     plt.savefig(filename)
-    #plt.clf()
+    # plt.clf()
+
 
 def visualization_rmse_vs_lambdas_item(lambdas_item, lambda_user, rmse_train, rmse_test, filename):
-
     plt.plot(
         lambdas_item,
         rmse_train,
@@ -165,10 +167,10 @@ def visualization_rmse_vs_lambdas_item(lambdas_item, lambda_user, rmse_train, rm
     title = "RMSE versus lambda item (lambda user = %s)" % (lambda_user)
     plt.title(title)
     plt.savefig(filename)
-    #plt.clf()
+    # plt.clf()
+
 
 def visualization_num_features(rmse_tr, rmse_te, num_features, filename):
-
     rmse_tr_mean = np.expand_dims(np.mean(rmse_tr, axis=0), axis=0)
     rmse_te_mean = np.expand_dims(np.mean(rmse_te, axis=0), axis=0)
 
@@ -214,7 +216,6 @@ def visualization_num_features(rmse_tr, rmse_te, num_features, filename):
 
 
 def visualization_lambdas_user(rmse_tr, rmse_te, lambdas_user, filename):
-
     rmse_tr_mean = np.expand_dims(np.mean(rmse_tr, axis=0), axis=0)
     rmse_te_mean = np.expand_dims(np.mean(rmse_te, axis=0), axis=0)
 
@@ -259,8 +260,8 @@ def visualization_lambdas_user(rmse_tr, rmse_te, lambdas_user, filename):
     plt.savefig(filename)
     # plt.clf()  # needed in case of consecutive call of this function to avoid stacking unrelated plots
 
-def visualization_lambdas_item(rmse_tr, rmse_te, lambdas_item, filename):
 
+def visualization_lambdas_item(rmse_tr, rmse_te, lambdas_item, filename):
     rmse_tr_mean = np.expand_dims(np.mean(rmse_tr, axis=0), axis=0)
     rmse_te_mean = np.expand_dims(np.mean(rmse_te, axis=0), axis=0)
 
@@ -304,9 +305,9 @@ def visualization_lambdas_item(rmse_tr, rmse_te, lambdas_item, filename):
     plt.grid(True)
     plt.savefig(filename)
     # plt.clf()  # needed in case of consecutive call of this function to avoid stacking unrelated plots
-    
-def visualization_lambdas(rmse_tr, rmse_te, lambdas, filename):
 
+
+def visualization_lambdas(rmse_tr, rmse_te, lambdas, filename):
     rmse_tr_mean = np.expand_dims(np.mean(rmse_tr, axis=0), axis=0)
     rmse_te_mean = np.expand_dims(np.mean(rmse_te, axis=0), axis=0)
 
@@ -345,10 +346,8 @@ def visualization_lambdas(rmse_tr, rmse_te, lambdas, filename):
     plt.title("RMSE vs Lambda")
     plt.xlabel("Lambda")
     plt.ylabel("RMSE")
-    #plt.xscale('log')
+    # plt.xscale('log')
     plt.legend(loc=4)
     plt.grid(True)
     plt.savefig(filename)
     # plt.clf()  # needed in case of consecutive call of this function to avoid stacking unrelated plots
-
-

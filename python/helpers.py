@@ -10,6 +10,7 @@ import csv
 from collections import deque
 import re
 
+
 def read_txt(path):
     """read text file from path."""
     with open(path, "r") as f:
@@ -24,6 +25,7 @@ def load_data(path_dataset):
 
 def preprocess_data(data):
     """preprocessing the text data, conversion to numerical array format."""
+
     def deal_line(line):
         pos, rating = line.split(',')
         row, col = pos.split("_")
@@ -77,6 +79,7 @@ def calculate_mse(real_label, prediction):
     t = real_label - prediction
     return 1.0 * t.dot(t.T)
 
+
 def split_data(ratings, num_items_per_user, num_users_per_item,
                min_num_ratings, p_test=0.1):
     """split the ratings to training data and test data.
@@ -86,36 +89,37 @@ def split_data(ratings, num_items_per_user, num_users_per_item,
     """
     # set seed
     np.random.seed(989)
-    
+
     # select user and item based on the condition.
     valid_users = np.where(num_items_per_user >= min_num_ratings)[0]
     valid_items = np.where(num_users_per_item >= min_num_ratings)[0]
-    valid_ratings = ratings[valid_items, :][:, valid_users]  
-    
+    valid_ratings = ratings[valid_items, :][:, valid_users]
+
     I, J, V = sp.find(valid_ratings)
-    
+
     all_indices = np.arange(I.shape[0])
-    test_size = math.ceil(I.shape[0]*p_test)
+    test_size = math.ceil(I.shape[0] * p_test)
     np.random.shuffle(all_indices)
     test_indices = all_indices[:test_size]
     train_indices = np.delete(all_indices, test_indices, axis=0)
-    #train_indices = all_indices[test_size:]
+    # train_indices = all_indices[test_size:]
 
     I_train = I[train_indices]
     J_train = J[train_indices]
     V_train = V[train_indices]
-    
+
     I_test = I[test_indices]
     J_test = J[test_indices]
     V_test = V[test_indices]
-    
+
     test = sp.lil_matrix(sp.coo_matrix((V_test, (I_test, J_test)), (valid_ratings.shape)))
     train = sp.lil_matrix(sp.coo_matrix((V_train, (I_train, J_train)), (valid_ratings.shape)))
-    
+
     print("Total number of nonzero elements in origial data:{v}".format(v=ratings.nnz))
     print("Total number of nonzero elements in train data:{v}".format(v=train.nnz))
     print("Total number of nonzero elements in test data:{v}".format(v=test.nnz))
     return valid_ratings, train, test
+
 
 def filter_ratings(ratings, num_items_per_user, num_users_per_item, min_num_ratings):
     """returns only the users and items which have more than 'min_num_ratings' ratings"""
@@ -124,6 +128,7 @@ def filter_ratings(ratings, num_items_per_user, num_users_per_item, min_num_rati
     valid_ratings = ratings[valid_items, :][:, valid_users]
 
     return valid_ratings
+
 
 def create_csv_submission(ratings, filename):
     """
@@ -136,11 +141,12 @@ def create_csv_submission(ratings, filename):
         fieldnames = ['Id', 'Prediction']
         writer = csv.DictWriter(csvfile, delimiter=",", fieldnames=fieldnames)
         writer.writeheader()
-        
+
         for row, col, val in ratings:
             # +1 to account for the indices starting from 1 instead of 0
-            id_ = 'r%d_c%d' % (row+1, col+1)
-            writer.writerow({'Id':id_,'Prediction':val})
+            id_ = 'r%d_c%d' % (row + 1, col + 1)
+            writer.writerow({'Id': id_, 'Prediction': val})
+
 
 def extract_indices(filename):
     """
@@ -152,18 +158,19 @@ def extract_indices(filename):
         max_idx = 0
         min_idx = 900
         for l in reader:
-            m = re.search('r([0-9]+)_c([0-9]+)',l['Id'])
+            m = re.search('r([0-9]+)_c([0-9]+)', l['Id'])
             # Account for indices starting from 1 instead of 0
-            row = int(m.group(1))-1
-            col = int(m.group(2))-1
-            indices.append((row,col))
+            row = int(m.group(1)) - 1
+            col = int(m.group(2)) - 1
+            indices.append((row, col))
             if (max_idx < col):
                 max_idx = col
             if (min_idx > col):
                 min_idx = col
-                
+
     print(max_idx, ' ', min_idx)
     return indices
+
 
 def build_k_indices(num_ratings, k_fold, seed):
     """build k indices for k-fold cross-validation."""
@@ -174,6 +181,7 @@ def build_k_indices(num_ratings, k_fold, seed):
     k_indices = [indices[k * interval: (k + 1) * interval]
                  for k in range(k_fold)]
     return np.array(k_indices)
+
 
 def check_kfold(k_fold):
     """check that k_fold >1"""
