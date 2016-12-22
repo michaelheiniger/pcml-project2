@@ -11,8 +11,8 @@ Chiara Orvati, Loïs Huguenin, Michael Heiniger
 - run.py 		: contains the code which produces the best predictions on Kaggle
 
 - biased_mf_gd.ipynb	: is a Python notebook built as a framework to use and
- assess biased matrix factorisation. It uses k-fold cross-validation and outputs plots of the error rate versus a wide range of values of lambda.
-
+ assess biased matrix factorisation using GD. It uses k-fold cross-validation and outputs plots of the error rate versus a wide range of values of lambda.
+ 
 - MF_GD.ipynb : is a Python notebook built as a framework to use and
  assess (regularized) matrix factorisation using GD . It uses k-fold cross-validation and outputs plots of the error rate versus a wide range of values of lambda.
 
