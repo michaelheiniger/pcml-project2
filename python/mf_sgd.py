@@ -342,6 +342,8 @@ def mf_sgd_compute_predictions(data, num_epochs, gamma, num_features, lambda_use
     nz_row, nz_col = data.nonzero()
     nz_data = list(zip(nz_row, nz_col))
 
+    rmse = np.zeros((num_epochs, 1))
+
     print("learn the matrix factorization using SGD...")
     for it in range(num_epochs):
         if (it % 5 == 0):
@@ -354,7 +356,8 @@ def mf_sgd_compute_predictions(data, num_epochs, gamma, num_features, lambda_use
             Z_opt[:, n] += gamma * (e * W_opt[:, d] - lambda_user * Z_opt[:, n])
             W_opt[:, d] += gamma * (e * Z_opt[:, n] - lambda_item * W_opt[:, d])
 
-    rmse = compute_error(data, Z_opt, W_opt, nz_data)
+
+        rmse[it] = compute_error(data, Z_opt, W_opt, nz_data)
 
     X_hat = prediction(W_opt, Z_opt)
 

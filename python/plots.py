@@ -57,115 +57,54 @@ def plot_train_test_data(train, test):
     plt.show()
 
 
-def visualization_rmse_vs_num_epochs(num_epochs, rmse_train, rmse_test, filename):
-    """visualize the evolution of rmse with number of iterations."""
-
+def visualization_num_epochs(rmse_tr, rmse_te, num_epochs, filename):
     epochs_range = np.arange(1, num_epochs + 1)
+
     plt.plot(
         epochs_range,
-        rmse_train,
+        rmse_tr,
         'r',
         linestyle="-",
-        label='RMSE train')
-
+        marker='o',
+        markersize=3,
+        label='train',
+        linewidth=1)
     plt.plot(
         epochs_range,
-        rmse_test,
+        rmse_te,
         'b',
         linestyle="-",
-        label='RMSE test')
+        marker='o',
+        markersize=3,
+        label='test',
+        linewidth=1)
+    plt.title("Evolution of RMSE versus epoch number")
     plt.xlabel("Epoch number")
     plt.ylabel("RMSE")
-    plt.legend(loc=2)
+    plt.legend(loc=1)
     plt.grid(True)
+    plt.savefig(filename)
+    # plt.clf()
+
+
+def visualization_num_epochs_best_predictions(rmse, num_epochs, filename):
+    epochs_range = np.arange(1, num_epochs + 1)
+
+    print(epochs_range.shape)
+
+    plt.plot(
+        epochs_range,
+        rmse,
+        'b',
+        linestyle="-",
+        color=[1, 0.7, 0.7],
+        label='RMSE',
+        linewidth=3)
     plt.title("Evolution of RMSE versus epoch number")
-    plt.savefig(filename)
-    # plt.clf()
-
-
-def visualization_rmse_vs_num_features(num_features, rmse_train, rmse_test, filename):
-    plt.plot(
-        num_features,
-        rmse_train,
-        'r',
-        linestyle="-",
-        label='RMSE train')
-
-    plt.plot(
-        num_features,
-        rmse_test,
-        'b',
-        linestyle="-",
-        label='RMSE test')
-    plt.xlabel("Number of features")
+    plt.xlabel("Epoch number")
     plt.ylabel("RMSE")
-    plt.legend(loc=2)
+    plt.legend(loc=1)
     plt.grid(True)
-    plt.title("RMSE versus Number of features")
-    plt.savefig(filename)
-    # plt.clf()
-
-
-def visualization_rmse_vs_lambdas(lambdas_user, lambdas_item, rmse_train, rmse_test, filename):
-    fig = plt.figure()
-    ax = fig.gca(projection='3d')
-    z1 = rmse_train.squeeze(axis=1)
-    z2 = rmse_test.squeeze(axis=1)
-    x = lambdas_user.squeeze(axis=1)
-    y = lambdas_item.squeeze(axis=1)
-    ax.plot(x, y, z1, label='RMSE train')
-    ax.plot(x, y, z2, label='RMSE test')
-    ax.legend()
-    title = "RMSE versus lambdas"
-    plt.title(title)
-    plt.show()
-    # plt.clf()
-
-
-def visualization_rmse_vs_lambdas_user(lambdas_user, lambda_item, rmse_train, rmse_test, filename):
-    plt.plot(
-        lambdas_user,
-        rmse_train,
-        'r',
-        linestyle="-",
-        label='RMSE train')
-
-    plt.plot(
-        lambdas_user,
-        rmse_test,
-        'b',
-        linestyle="-",
-        label='RMSE test')
-    plt.xlabel("Lambda user")
-    plt.ylabel("RMSE")
-    plt.legend(loc=2)
-    plt.grid(True)
-    title = "RMSE versus lambda user (lambda item = %s)" % (lambda_item)
-    plt.title(title)
-    plt.savefig(filename)
-    # plt.clf()
-
-
-def visualization_rmse_vs_lambdas_item(lambdas_item, lambda_user, rmse_train, rmse_test, filename):
-    plt.plot(
-        lambdas_item,
-        rmse_train,
-        'r',
-        linestyle="-",
-        label='RMSE train')
-
-    plt.plot(
-        lambdas_item,
-        rmse_test,
-        'b',
-        linestyle="-",
-        label='RMSE test')
-    plt.xlabel("Lambda item")
-    plt.ylabel("RMSE")
-    plt.legend(loc=2)
-    plt.grid(True)
-    title = "RMSE versus lambda item (lambda user = %s)" % (lambda_user)
-    plt.title(title)
     plt.savefig(filename)
     # plt.clf()
 
@@ -351,3 +290,4 @@ def visualization_lambdas(rmse_tr, rmse_te, lambdas, filename):
     plt.grid(True)
     plt.savefig(filename)
     # plt.clf()  # needed in case of consecutive call of this function to avoid stacking unrelated plots
+
