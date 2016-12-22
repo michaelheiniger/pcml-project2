@@ -4,6 +4,7 @@ import scipy.io
 import scipy.sparse as sp
 import helpers as h
 
+
 ########################################################################
 # Global mean baseline
 ########################################################################
@@ -34,6 +35,7 @@ def run_cross_validation_global_baseline(ratings, k_fold):
         rmse_tr[k], rmse_te[k] = baseline_global_mean(train_ratings, test_ratings)
 
     return rmse_tr, rmse_te
+
 
 def baseline_global_mean(train, test):
     """baseline using the global mean.
@@ -104,6 +106,7 @@ def run_cross_validation_user_baseline(ratings, k_fold):
         rmse_tr[k], rmse_te[k] = baseline_user_mean(train_ratings, test_ratings)
 
     return rmse_tr, rmse_te
+
 
 def baseline_user_mean(train, test):
     """baseline using the user means as the prediction.

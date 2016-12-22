@@ -208,7 +208,7 @@ def run_mf_biased_cv_lambda(ratings, k_fold, num_epochs, num_features, lambdas):
 
     h.check_kfold(k_fold)
 
-    seed = 1
+    seed = 3
 
     # Get k folds of indices for cross-validation
     rows, _ = ratings.nonzero()
@@ -218,7 +218,7 @@ def run_mf_biased_cv_lambda(ratings, k_fold, num_epochs, num_features, lambdas):
     rmse_tr = np.zeros((k_fold, len(lambdas)))
     rmse_te = np.zeros((k_fold, len(lambdas)))
 
-    gamma = 0.02
+    gamma = 0.005
 
     # K-fold cross-validation:
     for k in range(0, k_fold):
