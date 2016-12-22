@@ -10,7 +10,7 @@ Chiara Orvati, Loïs Huguenin, Michael Heiniger
 1. Executable files:
 - run.py 		: contains the code which produces the best predictions on Kaggle
 
-- biased_mf_sgd.ipynb	: is a Python notebook built as a framework to use and
+- biased_mf_gd.ipynb	: is a Python notebook built as a framework to use and
  assess biased matrix factorisation. It uses k-fold cross-validation and outputs plots of the error rate versus a wide range of values of lambda.
 
 2. Functions files:
@@ -18,9 +18,9 @@ Chiara Orvati, Loïs Huguenin, Michael Heiniger
 
 - baseline_predictions.py: contains the methods to compute the baseline predictions and evaluate their performance (cross_validation)
 
-- mf_sgd.py		: contains all functions related to (regularised) matrix factorisation (cross-validations, learning algorithms, methods to compute predictions)
+- mf_gd.py		: contains all functions related to (regularised) matrix factorisation using GD(cross-validations, learning algorithms, methods to compute predictions)
 
-- biased_mf_sgd.py	: contains all functions related to biased matrix factorisation (bias computation, cross-validations, learning algorithms, methods to compute predictions)
+- biased_mf_gd.py	: contains all functions related to biased matrix factorisation using GD (bias computation, cross-validations, learning algorithms, methods to compute predictions)
 
 
 - helpers.py 		: contains useful functions to load, modify, split the data and submit the ratings.

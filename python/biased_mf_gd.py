@@ -1,6 +1,6 @@
 import numpy as np
 import scipy.sparse as sp
-from mf_sgd import init_MF
+from mf_gd import init_MF
 import helpers as h
 
 
@@ -120,8 +120,8 @@ def compute_biases_restricted(ratings, num_items_per_user, num_users_per_item, m
 # Learn MF using biases and regularizers
 ############################################################################################
 
-def mf_sgd_biased(train, test, num_epochs, gamma, num_features, lambda_, mu, user_biases, item_biases, step_decrease):
-    """ Biased Matrix factorization using SGD
+def mf_gd_biased(train, test, num_epochs, gamma, num_features, lambda_, mu, user_biases, item_biases, step_decrease):
+    """ Biased Matrix factorization using GD
     
     input:
         train: the train data
@@ -153,7 +153,7 @@ def mf_sgd_biased(train, test, num_epochs, gamma, num_features, lambda_, mu, use
     rmse_train = np.zeros((num_epochs, 1))
     rmse_test = np.zeros((num_epochs, 1))
 
-    print("Learn the matrix factorization using SGD...")
+    print("Learn the matrix factorization using GD...")
     for it in range(num_epochs):
 
         if step_decrease:
@@ -181,7 +181,7 @@ def mf_sgd_biased(train, test, num_epochs, gamma, num_features, lambda_, mu, use
 ############################################################################################
 # Compute the full prediction matrix once all the hyper-parameters have been chosen
 ############################################################################################
-def mf_sgd_biased_compute_predictions(ratings, num_epochs, gamma, num_features, lambda_, mu, user_biases, item_biases,
+def mf_gd_biased_compute_predictions(ratings, num_epochs, gamma, num_features, lambda_, mu, user_biases, item_biases,
                                       step_decrease):
     """ Compute the full prediction matrix for the biased version of the MF 
     
@@ -207,7 +207,7 @@ def mf_sgd_biased_compute_predictions(ratings, num_epochs, gamma, num_features, 
     nz_row, nz_col = ratings.nonzero()
     nz_ratings = list(zip(nz_row, nz_col))
 
-    print("learn the matrix factorization using SGD...")
+    print("learn the matrix factorization using GD...")
     for it in range(num_epochs):
         if (it % 5 == 0):
             print("Starting epoch number %d" % (it))
@@ -235,7 +235,7 @@ def mf_sgd_biased_compute_predictions(ratings, num_epochs, gamma, num_features, 
 
 def cross_validation_biased(ratings, k_indices, k, num_epochs, gamma, num_features, lambda_, mu, user_biases,
                             item_biases, step_decrease):
-    """ Perform one fold of K-Fold Cross-validation for biased Matrix Factorization with SGD 
+    """ Perform one fold of K-Fold Cross-validation for biased Matrix Factorization with GD
     
     input:
         ratings: the matrix of ratings
@@ -273,7 +273,7 @@ def cross_validation_biased(ratings, k_indices, k, num_epochs, gamma, num_featur
 
     # Matrix Factorization (using Stochastic Gradient Descent)
     # Returned RMSE are arrays with rmse of each epochs
-    rmse_train, rmse_test = mf_sgd_biased(train_ratings, test_ratings, num_epochs, gamma, num_features, lambda_, mu,
+    rmse_train, rmse_test = mf_gd_biased(train_ratings, test_ratings, num_epochs, gamma, num_features, lambda_, mu,
                                           user_biases, item_biases, step_decrease)
 
     # Final RMSE is the one of last epoch

@@ -59,7 +59,7 @@ def prediction(W, Z):
     return np.dot(W.T, Z)
 
 
-def mf_sgd_regularized(train, test, num_epochs, gamma, num_features, lambda_user, lambda_item):
+def mf_gd_regularized(train, test, num_epochs, gamma, num_features, lambda_user, lambda_item):
     """ Matrix factorization using GD 
     input: 
         train: the train data
@@ -87,7 +87,7 @@ def mf_sgd_regularized(train, test, num_epochs, gamma, num_features, lambda_user
     rmse_train = np.zeros((num_epochs, 1))
     rmse_test = np.zeros((num_epochs, 1))
 
-    print("Learn the matrix factorization using SGD...")
+    print("Learn the matrix factorization using GD...")
     for it in range(num_epochs):
         # decrease step size
         gamma /= 1.2
@@ -108,7 +108,7 @@ def mf_sgd_regularized(train, test, num_epochs, gamma, num_features, lambda_user
 
 
 def cross_validation(ratings, k_indices, k, num_epochs, gamma, num_features, lambda_user, lambda_item):
-    """ Perform K-Fold Cross-validation for Matrix Factorization with SGD 
+    """ Perform K-Fold Cross-validation for Matrix Factorization with GD
     input: 
         ratings: the dataset
         k_indices: indices for the k_fold crossvalidaton
@@ -146,7 +146,7 @@ def cross_validation(ratings, k_indices, k, num_epochs, gamma, num_features, lam
     # Matrix Factorization (using Stochastic Gradient Descent)
     ############################################################
     # Returned RMSE are arrays with rmse of each epochs
-    rmse_train, rmse_test = mf_sgd_regularized(train_ratings, test_ratings, num_epochs, gamma, num_features,
+    rmse_train, rmse_test = mf_gd_regularized(train_ratings, test_ratings, num_epochs, gamma, num_features,
                                                lambda_user, lambda_item)
 
     # Final RMSE is the one of last epoch
@@ -322,7 +322,7 @@ def run_mf_reg_cv(ratings, k_fold, num_epochs, num_features, lambda_user, lambda
 ############################################################################################
 # Compute the full prediction matrix once all the hyper-parameters have been chosen
 ############################################################################################
-def mf_sgd_compute_predictions(data, num_epochs, gamma, num_features, lambda_user, lambda_item):
+def mf_gd_compute_predictions(data, num_epochs, gamma, num_features, lambda_user, lambda_item):
     """ Compute the full prediction matrix 
     input: 
         data: the dataset
@@ -344,7 +344,7 @@ def mf_sgd_compute_predictions(data, num_epochs, gamma, num_features, lambda_use
 
     rmse = np.zeros((num_epochs, 1))
 
-    print("learn the matrix factorization using SGD...")
+    print("learn the matrix factorization using GD...")
     for it in range(num_epochs):
         if (it % 5 == 0):
             print("Starting epoch number %d" % (it))
