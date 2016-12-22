@@ -61,22 +61,26 @@ def visualization_num_epochs(rmse_tr, rmse_te, num_epochs, filename):
 
     plt.plot(
         epochs_range,
-        rmse_tr.T,
-        'b',
-        linestyle="-",
-        color=([0.7, 0.7, 1]),
-        linewidth=0.5)
-    plt.plot(
-        epochs_range,
-        rmse_te.T,
+        rmse_tr,
         'r',
         linestyle="-",
-        color=[1, 0.7, 0.7],
-        linewidth=0.5)
+        marker='o',
+        markersize=3,
+        label='train',
+        linewidth=1)
+    plt.plot(
+        epochs_range,
+        rmse_te,
+        'b',
+        linestyle="-",
+        marker='o',
+        markersize=3,
+        label='test',
+        linewidth=1)
     plt.title("Evolution of RMSE versus epoch number")
     plt.xlabel("Epoch number")
     plt.ylabel("RMSE")
-    plt.legend(loc=3)
+    plt.legend(loc=1)
     plt.grid(True)
     plt.savefig(filename)
     # plt.clf()
